@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
+
+	<th:block th:fragment="content">
+		<h1>영화 조회</h1>
+
+		<div class="form-group">
+			<label>제목</label> <input type="text" class="form-control"
+				name="title" th:value="${dto.title}" readonly="readonly">
+		</div>
+
+		<div class="form-group">
+			<label>리뷰 수</label> <input type="text" class="form-control"
+				name="reviewCnt" th:value="${dto.reviewCnt}" readonly="readonly">
+		</div>
+
+		<div class="form-group">
+			<label>별점 평균</label> <input type="text" class="form-control"
+				name="avg" th:value="${dto.avg}" readonly="readonly">
+		</div>
+
+		<div class="uploadResult">
+			<ul>
+				<li th:each="movieImage: ${dto.imageDTOList}"
+				th:data-file="${movieImage.getThumbnailURL()}"><img
+					th:if="${movieImage.path != null}"
+					th:src="|/display?fileName=${movieImage.getThumbnailURL()}|"></li>
+			</ul>
+		</div>
+
+
+		<!-- <div class="form-group">
+				<label>이미지</label>
+				<div class="custom-file">
+					<input type="file" class="custom-file-input files" id="fileInput"
+						multiple>
+					<lable class="custom-file-label" data-browse="Browse"></lable>
+				</div>
+			</div> -->
+
+
+
+		<button type="button" class="btn btn-primary btn-reviewModal">
+			Revie Count <span class="badge badge-light">
+				[[${dto.reviewCnt}]] </span>
+		</button>
+
+
+		<button type="button" class="btn btn-primary addReviewBtn">
+			리뷰 등록 <span class="badge badge-light"> [[${dto.reviewCnt}]] </span>
+		</button>
+
+
+		<div class="list-group reviewList"></div>
+
+		<style>
+.uploadResult {
+	width: 100%;
+	background-color: gray;
+	margin-top: 10px;
+}
+
+.uploadResult ul {
+	display: flex;
+	flex-flow: row;
+	justify-content: center;
+	align-items: top;
+	overflow: auto;
+}
+
+.uploadResult ul li {
+	list-style: none;
+	padding: 10px;
+	margin-left: 2em;
+}
+
+.uploadResult ul li img {
+	width: 100px;
+}
+</style>
+
+		<div class="uploadResult">
+			<ul>
+			</ul>
+		</div>
+
+		<!-- <button type ="submit" class ="btn btn-primary registerBtn">등록</button> -->
+
+
+
+
+
+
+		<!-- Modal 추가 -->
+		<div class="reviewModal modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">영화 리뷰</h4>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+					</div>
+
+					<!-- 		[변경추가] -->
+					<div class="modal-body">
+						<div class="form-group">
+							<label>리뷰어 아이디</label>
+							<!-- 리뷰 -->
+							<input class="form-control" type="text" name="mid"
+								placeholder="review text...">
+						</div>
+						<div class="form-group">
+							<label>별점<span class="grade"></span></label>
+							<div class="starrr"></div>
+						</div>
+						<div class="form-group">
+							<label>리뷰</label> <input class="form-control" type="text"
+								name="text" placeholder="Good Movie!">
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger removeBtn">Remove</button>
+						<button type="button" class="btn btn-warning modifyBtn">Modify</button>
+						<button type="button" class="btn btn-primary saveBtn">Save</button>
+						<button type="button" class="btn btn-outline-secondary closeBtn"
+							data-dismiss="modal">Close</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+
+
+
+
+		<div class="imageModal modal" tabindex="-2" role="dialog">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">포스터</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-level="close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<!--  aria-level 계층별레벨?? -->
+					</div>
+					<div class="modal-body">
+					
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- 별점 링크들 -->
+		<!-- root ==> " / "   기본값은 static 이다.  -->
+		<script th:src="@{/js/starrr.js}"></script>
+		<link th:href="@{/css/starrr.css}" rel="stylesheet">
+		<link rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css"
+			integrity="sha512-ZfKn7az0YmtPUojZnRXO4CUdt3pn+ogBAyGbqGplrCIR5B/tQwPGtF2q29t+zQj6mC/20w4sSl0cF5F3r0HKSQ=="
+			crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<!-- /별점 링크들 -->
+
+		<script>
+			/* 	$(".btn-reviewModal").on("click", function(e){
+					
+					$(".reviewModal").modal("show");
+				})	
+				
+				 $(".addReviewBtn").on("click", function(e){
+				
+				})  */
+			 
+				$(document).ready(function(e) {
+					
+					var grade=0;
+					var mno=[[${dto.mno}]];
+					
+					$('.starrr').starrr({
+						rating : grade,
+						change: function(e, value){
+							if(value){
+								console.log(value);
+								grade=value;
+							}
+						}
+					});
+					
+					/* $(".reviewModal").modal("show"); */
+					
+					var reviewModal=$(".reviewModal");
+					var inputMid=$('input[name="mid"]');
+					var inputText=$('input[name="text"]');
+					
+					$(".addReviewBtn").click(function(){
+						inputMid.val("");
+						inputText.val("");
+					
+						$(".removeBtn, .modifyBtn").hide();
+						 $(".saveBtn").show(); 
+					reviewModal.modal("show");
+					})
+					
+					$('.saveBtn').click(function(){
+						var data={mno:mno, grade:grade, text:inputText.val(),mid:inputMid.val()};
+						
+						console.log(data);
+						
+						$.ajax({
+							url: '/reviews/'+mno,
+							type: 'post',
+							data: JSON.stringify(data),
+							contentType:"application/json; charset=utf-8",
+							dataType:"text",
+							success: function(result){
+								
+								console.log("success result : " + result);
+								
+								self.location.reload();
+							}
+							
+						})
+						
+						reviewModal.modal('hide');
+					});
+					
+					
+					
+				
+					
+					
+					function getMovieReviews(){
+						function formatTime(str){
+							var date =new Date(str);
+							
+							return date.getFullYear()+"/"
+													+(date.getMonth()+1)+"/"
+													+date.getDate()+' '
+													+date.getHours()+ " : "
+													+date.getMinutes();
+							
+						}
+				$.getJSON("/reviews/" + mno + "/all", function(arr){
+					
+				
+						console.log("점검 2");
+					var str="";
+					
+					$.each(arr, function(idx, review){
+						console.log("review list ----- " + review);
+						
+					str += ' <div class="card-body" data-reviewnum=' + review.reviewnum+' data-mid='+review.mid+'>';
+						str += ' <h5 class="card-title">'+review.text+'<br>'
+						
+						+'<p class="starrr"><a>★</a> : '+'<span>'+review.grade+'</spen></p></h5>';
+						str += ' <h6 class="card-subtitle mb-2 text-muted">' +review.nickname+'</h6>';
+						str += ' <p class="card-text">'+formatTime(review.regDate)+'</p>';
+						str += '</div>'; 
+					/*	
+						*/
+					});
+					$(".reviewList").html(str);
+						})		
+						
+					}
+					getMovieReviews();
+
+				/* 	$('.saveBtn').on("click",function(e){
+						
+					}) */
+			
+					
+					
+					/*
+					var regex = new RegExp("(.*?)\.(exe¦sh¦zip¦alz¦tiff)$");
+					var maxSize = 10485760; //10MB
+			
+					function checkExtension (fileName, fileSize){
+				
+						if(fileSize >= maxSize){
+							alert("파일 사이즈 초과"); 
+							return false;
+						}
+				
+						if(regex.test(fileName)){
+							alert("해당 종류의 파일은 업로드할 수 없습니다."); 
+							return false;
+						}
+						return true;
+					}
+					$(".custom-file-input").on("change", function(){
+						var fileName = $(this).val().split("\\").pop();
+						$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+						
+						var formData = new FormData();
+						var inputFile = $(this);
+						var files=inputFile[0].files;
+						var appended=false;
+						for (var i =0;i<files.length;i++){
+							if(!checkExtension(files[i].name, files[i].size)){
+								return false;
+							}
+							console.log(files[i]);
+							formData.append("uploadFiles", files[i]);//오류
+							appended = true;
+						}
+						if (!appended){return;}
+						for (var value of formData.values()){
+							console.log(value);
+						}
+						
+						//실제 업로드 부분
+						//upload ajax
+						$.ajax({
+							url : '/uploadAjax',
+							processData:false,
+							contentType:false,
+							data:formData,
+							type:'POST',
+							dataType :'Json',
+							success: function(result){
+								console.log(result);
+								showResult(result);
+							},
+							error : function (jqXHR, textStatus,errorThrown){
+								console.log(textStatus);
+							}
+						}); //$.ajax
+					})
+					
+					
+					function showResult(arr){
+						console.log(arr);
+						
+						var divAreaUL = $(".uploadResult ul");
+						var str = "";
+						
+						for(var i = 0; i < arr.length; i++){
+							str += "<li data-name='"+arr[i].fileName+"' data-path='"+arr[i].folderPath+"' data-uuid='"+arr[i].uuid+"'>";
+							str += "<div>";
+							str += "<button type='button' data-file=\'"+arr[i].imageURL+"\' class='btn-warning btn sm'>X</button><br>";
+							str += "<img src='/display?fileName="+ arr[i].thumbnailURL + "'>";
+							 str += "<button class='removeBtn' data-name='"+arr[i].imageURL+
+								"'> 삭제 </button>"; 
+							str += "</div>";
+							str += "</li>";
+							
+						}
+						console.log(str);
+						
+						divAreaUL.append(str);
+						
+						$(".uploadResult").on("click", "li button", function(e){
+							console.log("deletefile...");
+							var targetFile =$(this).data("file");
+							var targetLi =$(this).closest("li");
+
+						
+							$.ajax({
+								url: '/removeFile', 
+								type: 'POST',
+								data: {fileName: targetFile}, 
+								dataType: 'text', 
+								success: function(result){ 
+									alert(result);
+								targetLi.remove();						
+								}
+							
+							});
+						});
+					}
+					
+				});
+			 */
+
+			 
+			 
+			 
+			 
+			 var reviewnum;
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			//prevent  수정 삭제
+			$(".reviewList")
+					.on(
+							"click", ".card-body",
+							function() {
+
+								$(".saveBtn").hide()
+								$(".removeBtn, .modifyBtn").show();
+								
+								var targetReview = $(this);
+								
+								reviewnum = targetReview.data("reviewnum");
+								
+								console.log("reviewnum : " + reviewnum);
+								
+								inputMid.val(targetReview.data("mid"));
+								inputText.val(targetReview.find('.card-title').clone().children().remove().end().text());
+								
+								var grade = targetReview.find('.card-title span').html();
+								
+								$(".starrr a:nth-child("+grade+")").trigger("click");
+								
+								$('.reviewModal').modal('show');
+								
+								
+								var str = "";
+
+								$(".uploadResult li")
+										.each(
+												function(i, obj) {
+													var target = $(obj);
+													str += "<input type='hidden' name='imageDTOList["
+															+ i
+															+ "].img_name' value='"
+															+ target
+																	.data('name')
+															+ "'>";
+													str += "<input type='hidden' name='imageDTOList["
+															+ i
+															+ "].path' value='"
+															+ target
+																	.data('path')
+															+ "'>";
+													str += "<input type='hidden' name='imageDTOList["
+															+ i
+															+ "].Uuid' value='"
+															+ target
+																	.data('uuid')
+															+ "'>";
+
+												});
+
+								$(".box").html(str);
+								$("form").submit();
+
+							})
+		$(".modifyBtn").on("click", function(){
+			var data = {reviewnum: reviewnum, mno: mno, grade: grade, text: inputText.val(),
+							mid: inputMid.val()};
+			
+			console.log("수정(modifyBtn) 버튼 클릭시 data : " + data);
+			
+			$.ajax({
+				url: '/reviews/'+mno+"/"+reviewnum,
+				type: "PUT",
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8",
+				dataType:"text",
+				success: function(result){
+					console.log(" 수정값 result : " + result);
+					self.location.reload();
+				}
+				
+				
+			})
+			
+			reviewModal.modal('hide');
+		});
+			
+			
+		$(".removeBtn").on("click", function(){
+			var data = {reviewnum:reviewnum};
+			console.log("삭제 reviewnum 번 : " +revienwnum);
+			$.ajax({
+				url:'/revies/'+mno+'/'+reviewnum,
+				type: "DELETE",
+				contentType: "application/json; charset=utf-8",
+				dataType: "text",
+				success: function(result){
+					console.log("삭제 값 result : "+result);
+					self.location.reload();
+					
+				}
+				
+			})
+			reviewModal.modal('hide');
+							});
+			
+		$(".uploadResult li").click(function(){
+			console.log("uploadResult li 클릭 이벤트 발생 ");
+			
+			var file = $(this).data('file');
+			
+			console.log("업데이트 file : " + file);
+			$('.imageModal .modal-body').html("<img stryle='width:100%' src='/display?fileName="+file+"&size=1'>");
+
+			$(".imageModal").modal("show");
+		})
+		
+		
+			
+							//끝?
+		});
+		
+		</script>
+
+	</th:block>
+</th:block>
