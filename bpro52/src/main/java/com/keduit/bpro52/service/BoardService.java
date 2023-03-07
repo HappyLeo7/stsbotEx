@@ -45,6 +45,7 @@ public interface BoardService {
 				.writerName(member.getName())
 				.replyCount(replyCount.intValue())  // Long -> int
 				.build();
+		System.out.println("서비스 entitToDTO clubDTO :: "+boardDTO);
 				
 		return boardDTO;
 		

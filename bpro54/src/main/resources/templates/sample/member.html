@@ -6,5 +6,23 @@
 </head>
 <body>
 	<h1>회원전용 페이지 입니다.</h1>
+
+<div sec:authorize="hasRole('USER')">Has USER ROLE</div>
+<div sec:authorize="hasRole('MANAGER')">Has MANAGER ROLE</div>
+<div sec:authorize="hasRole('ADMIN')">Has ADMIN ROLE</div>
+
+<div sec:authorize="isAuthenticated()">
+	Only Authenticated user can see this Text
+</div>
+
+Authentication user name : 
+<div sec:authentication="name"></div>
+Authentication user roles:
+<div sec:authentication="principal.authorities"></div>
+
+
+
+
+
 </body>
 </html>

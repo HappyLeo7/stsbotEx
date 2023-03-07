@@ -63,7 +63,7 @@ public class BoardServiceTests {
 				.title("title update....")
 				.content("content update....")
 				.build();
-		
+		System.out.println("수정테스트 : "+boardDTO);
 		boardService.modify(boardDTO);
 	}
 

@@ -1,0 +1,38 @@
+package com.keduit.bpro52.repository;
+
+import java.util.stream.IntStream;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import com.keduit.bpro52.entity.Member;
+
+@SpringBootTest
+public class MemberRepositoryTests {
+	
+	@Autowired
+	private MemberRepository memberRepository;
+	
+	@Test
+	public void insertMembers() {
+		
+		IntStream.rangeClosed(1, 100).forEach(i -> {
+			Member member = Member.builder()
+					.email("user"+i+"@abc.com")
+					.password("0000")
+					.name("user"+i)
+					.build();
+			memberRepository.save(member);
+		});
+	}
+	
+	
+	
+	
+
+}

@@ -43,10 +43,11 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public PageResultDTO<BoardDTO, Object[]> getList(PageRequestDTO pageRequestDTO) {
 		
-		log.info("pageRequestDTO : " + pageRequestDTO);
+		log.info("getList() pageRequestDTO : " + pageRequestDTO);
 		
 		Function<Object[], BoardDTO> fn = (en -> 
 		         entityToDTO((Board)en[0],(Member)en[1],(Long)en[2]));
+		log.info("getList() Funcion fn : " + fn);
 		
 //		Page<Object[]> result = repository.getBoardWithReplyCount(
 //				pageRequestDTO.getPageable(Sort.by("bno").descending()));
@@ -79,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	@Override
 	public void modify(BoardDTO boardDTO) {
-		
+		log.info("게시판 수정 내용 메서드");
 		Board board = repository.getById(boardDTO.getBno());
 		
 		if(board != null) {

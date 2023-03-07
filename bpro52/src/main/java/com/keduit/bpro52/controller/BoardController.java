@@ -28,6 +28,9 @@ public class BoardController {
 		
 		log.info("list........." + pageRequestDTO);
 		model.addAttribute("result", boardService.getList(pageRequestDTO));
+		log.info("가져와야할 페이지 데이터 : "+model.getAttribute("result"));
+		
+		
 	}
 	
 	@GetMapping("/register")

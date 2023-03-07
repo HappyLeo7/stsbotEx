@@ -18,17 +18,14 @@ public class PageResultDTO<DTO, EN> {
 	private int totalPage;
 	private int page;
 	private int size;
-	
 	private int start, end;
-	
 	private boolean prev, next;
-	
 	private List<Integer> pageList;
 	
 	public PageResultDTO(Page<EN> result, Function<EN, DTO> fn) {
 		
 		dtoList = result.stream().map(fn).collect(Collectors.toList());
-		
+		System.out.println("[PageResultDTO 위치 체크 dtoList : "+dtoList+"]");
 		totalPage = result.getTotalPages();
 		makePageList(result.getPageable());
 		
@@ -48,6 +45,7 @@ public class PageResultDTO<DTO, EN> {
 		
 		this.pageList = IntStream.rangeClosed(start, end)
 				            .boxed().collect(Collectors.toList());
+		System.out.println("makePageList 위치 체크 pageList : "+pageList);
 		
 	}
 

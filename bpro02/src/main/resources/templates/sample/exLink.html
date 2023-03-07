@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<ul>
+		<li th:each="io:${list}">
+			<a th:href="@{/sample/ex1}">[[${io}]]</a>
+	</ul>
+	
+	<ul>
+		<li th:each="io2: ${list}">
+			<a th:href="@{/sample/ex1(so=${io2.sno})}">[[${io2}]]</a>
+		
+		</li>
+	</ul>
+	
+	<ul>
+		<li th:each="oo1:${list}">
+			<a th:href="@{/sample/ex1/{sn}(sn=${oo1.sno})}">[[${oo1}]]</a>
+			</li>
+	</ul>
+	
+	<ul>
+		<li th:each="po1:${list}">
+		[[${po1.sno}]] ===> [[${#temporals.format(po1.regTime, 'yyyy/MM/dd')}]]
+	</ul>
+</body>
+</html>

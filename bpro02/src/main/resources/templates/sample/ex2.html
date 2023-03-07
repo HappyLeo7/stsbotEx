@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+
+<style type="text/css">
+.target{
+background-color:green; 
+}
+</style>
+
+</head>
+<body>
+
+ <ul>
+ 	<li th:each="do:${list}">
+		[[${do}]]
+	</li>
+</ul> 
+
+<ul>
+ 	<li th:each="do, stat:${list}">
+		[[${stat.index}]]----[[${do}]] 
+	</li>
+</ul>
+  <ul>
+	<li th:each="do, sta:${list}" th:if="${do.sno % 5 ==0}">
+		[[${do}]]
+	</li>
+</ul>
+
+<ul>
+	<li th:each="do, state:${list}">
+		<!-- <span>4의 배수</span> -->
+		<span  th:if="${do.sno % 4 == 0}" th:text="${'---------'+do.sno+'---------'}"></span>
+		<span th:unless="${do.sno % 4 ==0}" th:text="${'--[[do.first]]--'+do.first}"></span>
+	</li>
+</ul>
+
+<ul>
+	<li th:each="do,state:${list}" th:text="${do.sno%5==0}?${do.sno}"></li>
+</ul>
+<ul>
+	<li th:each="do,state:${list}" th:text="${do.sno%5==0}?${do.sno}:${do.first}"></li>
+</ul>
+
+<ul>
+	<!-- /*<li th:each="do, state:${list}" th:class="${do.sno%5==0}?'target'"th:text="${do}"> */-->
+	<li th:each="do :${list}">
+	<span th:class="${do.sno % 5 == 0}?'target'">[[${do}]]</span>
+	</li>	
+</ul>
+
+
+
+<ul>
+	<th:block th:each="dto:${list}">
+		<li th:text="${dto.sno} % 5 ==0}?${dto.sno}:${dto.first}"></li>
+		</th:block>
+</ul>
+
+</body>
+</html>

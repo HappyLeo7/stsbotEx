@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout/basic::setContent(~{this::content})}">
+<th:block th:fragment="content">
+	<h1 class="mt-4">게시글 수정</h1>
+	<form th:action="@{/board/modify}" th:method="post">
+	
+		<input type="hidden" name="page" th:value="${requestDTO.page}">
+	
+		<div class="form-group">
+			<label>No</label>
+				<input type="text" class="form-control" name="bno" readonly="readonly" th:value="${dto.bno}">
+		</div>
+		<div class="form-group">
+			<label>Title</label>
+				<input type="text" class="form-control" name="title"  th:value="${dto.title}"> 
+		</div>
+		<div class="form-group">
+			<label>Content</label>
+				<textarea class="form-control" name="content" rows="5" >
+				[[${dto.content}]]
+				</textarea> 
+		</div>
+		<div class="form-group">
+			<label>작성자</label>
+				<input type="text" class="form-control" name="writer" readonly="readonly" th:value="${dto.writer}"> 
+		</div>
+		<div class="form-group">
+			<label>작성일</label>
+				<input type="text" class="form-control"  readonly="readonly" th:value="${#temporals.format(dto.regDate,'yyyy/MM/dd HH:mm:ss')}"> <!-- 날짜를 받아와서 내가 보기편한 형태로 변경시킬수 있음 "${#temporals.format(dto.regDate,'yyyy/MM/dd HH:mm:ss')}" --> 
+		</div>
+		<div class="form-group">
+			<label>수정일</label>
+				<input type="text" class="form-control" readonly="readonly" th:value="${#temporals.format(dto.updateDate, 'yyyy/MM/dd HH:mm:ss')}"> 
+		</div>
+	
+		<button type="submit" class="btn btn-primary modifyBtn">수정</button>
+		<button type="button" class="btn btn-info listBtn" >목록</button>
+		<button type="button" class="btn btn-danger removerBtn" >삭제</button>
+	
+	<!-- 	<a th:href="@{/board/modify(bno=${dto.bno},page=${requeseDTO.page})}">
+		</a>
+		<a th:href="@{/board/list}">
+		</a> -->
+		
+		
+	</form>
+	
+	<script th:inline="javascript">
+		var actionForm=$("form");
+		$(".removeBtn").click(function(){
+			actionForm
+				.attr("action","/board/remove")
+				.attr("method","post");
+			
+			actionForm.submit();
+		})
+		
+		$(".modifyBtn").click(function(){
+			if(!confirm("수정하시겠습니까?")){
+				return ;
+			}
+			
+			actionForm.attr("action","/board/modify")
+						.attr("method","post")
+						.submit();
+		});
+		
+		$(".listBtn").click(function(){
+			var pageInfo = $("input[name='page']");
+			
+			actionForm.empty();
+			actionForm.append(pageInfo);
+			actionForm.attr("action","/board/list")
+					  .attr("method","get");
+			
+			/* 테스트용 */
+			/* console.log(actionForm.html()); */
+			actionForm.submit(); 
+		})
+		
+		
+	</script>
+	
+	
+</th:block>
+
+</th:block>

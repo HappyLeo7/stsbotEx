@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout/basic::setContent(~{this::content})}">
+<th:block th:fragment="content">
+	<h1 class="mt-4">게시글 조회</h1>
+	<form th:action="@{/board/register}" th:method="post">
+		<div class="form-group">
+			<label>No</label>
+				<input type="text" class="form-control" name="bno" readonly="readonly" th:value="${dto.bno}">
+		</div>
+		<div class="form-group">
+			<label>Title</label>
+				<input type="text" class="form-control" name="title" readonly="readonly" th:value="${dto.title}"> 
+		</div>
+		<div class="form-group">
+			<label>Content</label>
+				<textarea class="form-control" name="content" rows="5" readonly="readonly">
+				[[${dto.content}]]
+				</textarea> 
+		</div>
+		<div class="form-group">
+			<label>작성자</label>
+				<input type="text" class="form-control" name="writer" readonly="readonly" th:value="${dto.writer}"> 
+		</div>
+		<div class="form-group">
+			<label>작성일</label>
+				<input type="text" class="form-control" name="regDate" readonly="readonly" th:value="${#temporals.format(dto.regDate,'yyyy/MM/dd HH:mm:ss')}"> <!-- 날짜를 받아와서 내가 보기편한 형태로 변경시킬수 있음 "${#temporals.format(dto.regDate,'yyyy/MM/dd HH:mm:ss')}" --> 
+		</div>
+		<div class="form-group">
+			<label>수정일</label>
+				<input type="text" class="form-control" name="updateDate" readonly="readonly" th:value="${#temporals.format(dto.updateDate, 'yyyy/MM/dd HH:mm:ss')}"> 
+		</div>
+		<a th:href="@{/board/modify(bno=${dto.bno},page=${requestDTO.page})}">
+		<button type="button" class="btn btn-primary">수정</button>
+		</a>
+		<a th:href="@{/board/list}">
+		<button type="button" class="btn btn-info" >목록</button>
+		</a>
+		
+		
+	</form>
+</th:block>
+
+</th:block>
